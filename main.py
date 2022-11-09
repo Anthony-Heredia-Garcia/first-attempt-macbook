@@ -10,3 +10,4 @@ print(new_list)
 
 print(better_list)
 print('I hope this works')
+#I think I fixed it?
