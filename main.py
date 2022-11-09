@@ -9,3 +9,4 @@ better_list = list(map(lambda *el: el*3, [1,2,3,4,5]))
 print(new_list)
 
 print(better_list)
+print('I hope this works')
