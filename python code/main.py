@@ -2,7 +2,7 @@ my_inventory = ["Sword", "Shield", "Bow", "Potions"]
 
 print(f"Current inventory: {my_inventory}")
 
-new_item = "Crystal Sceptre"
+new_item = "Sceptre"
 
 my_inventory.append(new_item)
 
