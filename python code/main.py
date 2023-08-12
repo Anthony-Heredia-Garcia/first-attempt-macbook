@@ -1,13 +1,44 @@
-my_inventory = ["Sword", "Shield", "Bow", "Potions"]
+# my_map = {
+#     3 : 'fizz',
+#     5 : 'buzz',
+#     7 : 'bazz'
+# }
 
-print(f"Current inventory: {my_inventory}")
+# for i in range(100):
+#     text = ''
+#     for key in my_map.keys():
+#         if i % key == 0:
+#             text += my_map[key]
+#     if text != '':
+#         print(text)
+#     else:
+#         print(i)
+    
+# Code Wars Exercises
 
-new_item = "Sceptre"
+# Check if number is a perfect square
+def is_square(n):
+    square = n**(.5)
+    return int(square)**2 == n
 
-my_inventory.append(new_item)
+# Return the 'highest achievable result'
+# Note: the explanation on this problem was bad. :(
+def expression_matter(a, b, c):
+    return max(a*(b+c), a*b*c, a+b*c, (a+b)*c, a+b+c)
 
-print(f"Inventory after pickup: {my_inventory}")
+# Sort a given string. Each word in the string will contain a single number.
+# The number will be the position of the word.
+# Example "is2 Thi1s T4est 3a"  -->  "Thi1s is2 3a T4est"
+def order(sentence):
+    sorted = ''
+    if sentence == '':
+        return sorted
+    words = sentence.split(' ')
+    for i in range(10):
+        for word in words:
+            if str(i) in word:
+                sorted += f"{word} "
+    return sorted.strip()
+        
 
-my_inventory.pop()
-
-print(f"Inventory after dropping last item: {my_inventory}")
+print(order("is2 Thi1s T4est 3a"))
