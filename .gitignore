@@ -4,3 +4,5 @@ include/
 *.cfg
 *.vscode
 /c
+.DS_Store
+*.png
