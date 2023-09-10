@@ -6,3 +6,5 @@ include/
 /c
 .DS_Store
 *.png
+*.db
+*.csv
