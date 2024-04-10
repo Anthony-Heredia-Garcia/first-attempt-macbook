@@ -8,3 +8,4 @@ include/
 *.png
 *.db
 *.csv
+react/
