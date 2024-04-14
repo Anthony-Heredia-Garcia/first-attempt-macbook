@@ -34,6 +34,9 @@
         let scene = new THREE.Scene();
         scene.background = new THREE.Color(0xffffff); // Set background color to white
 
+        // Adjust the starting orientation of the cube
+        scene.rotation.y = THREE.Math.degToRad(30);
+
         let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         let renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -67,6 +70,7 @@
         let cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
         let cubeEdges = new THREE.EdgesGeometry(cubeGeometry);
         let cubeLines = new THREE.LineSegments(cubeEdges, new THREE.LineBasicMaterial({ color: 0x000000 }));
+        
         scene.add(cubeLines);
 
         // Create 3D objects based on row coordinates
@@ -90,6 +94,7 @@
 
         // Add controls for interactivity
         let controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableZoom = false;
 
         // Render function
         function animate() {
