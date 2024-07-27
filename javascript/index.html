@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,14 +11,26 @@
             height: 600px;
             position: relative;
         }
+
+        .label {
+            position: absolute;
+            color: black;
+            background-color: white;
+            padding: 2px;
+            border-radius: 3px;
+            pointer-events: none;
+            font-size: 12px;
+            transform: translate(-50%, -50%);
+        }
     </style>
 </head>
+
 <body>
     <div id="container"></div>
 
     <script type="module">
         import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.124/build/three.module.js';
-        import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.124/examples/jsm/controls/OrbitControls.js';
+        import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.124/examples/jsm/controls/OrbitControls.js';
 
         // Read data exported from Python
         let rowCoordinates = [
@@ -30,6 +43,8 @@
             // Add more coordinates as needed
         ];
 
+        let labels = ["Point 1", "Point 2", "Point 3", "Point 4", "Point 5"];
+
         // Initialize Three.js scene
         let scene = new THREE.Scene();
         scene.background = new THREE.Color(0xffffff); // Set background color to white
@@ -37,10 +52,11 @@
         // Adjust the starting orientation of the cube
         scene.rotation.y = THREE.Math.degToRad(30);
 
-        let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const container = document.getElementById('container');
+        let camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
         let renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('container').appendChild(renderer.domElement);
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
 
         // Create grid helpers for X, Y, and Z axes
         const gridSize = 9;
@@ -57,29 +73,38 @@
 
         let topWall = new THREE.GridHelper(gridSize, gridSize);
         topWall.rotation.y = Math.PI / 2;
-        topWall.position.set(0, gridSize/2, 0, 0);
+        topWall.position.set(0, gridSize / 2, 0, 0);
         scene.add(topWall);
 
         let bottomWall = new THREE.GridHelper(gridSize, gridSize);
         bottomWall.rotation.y = Math.PI / 2;
-        bottomWall.position.set(0, -gridSize/2, 0, 0);
+        bottomWall.position.set(0, -gridSize / 2, 0, 0);
         scene.add(bottomWall);
 
         // Create a cube mesh with grid lines inside it
         let cubeSize = 10;
         let cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
         let cubeEdges = new THREE.EdgesGeometry(cubeGeometry);
-        let cubeLines = new THREE.LineSegments(cubeEdges, new THREE.LineBasicMaterial({ color: 0x000000 }));
-        
+        let cubeLines = new THREE.LineSegments(cubeEdges, new THREE.LineBasicMaterial({color: 0x000000}));
+
         scene.add(cubeLines);
 
         // Create 3D objects based on row coordinates
-        rowCoordinates.forEach(function(coord, index) {
+        let spheres = [];
+        rowCoordinates.forEach(function (coord, index) {
             let geometry = new THREE.SphereGeometry(0.2, 32, 32); // Use spheres for points
-            let material = new THREE.MeshBasicMaterial({ color: (index < 2) ? 0x0000ff : 0xff0000 }); // Blue for first 2
+            let material = new THREE.MeshBasicMaterial({color: (index < 2) ? 0x0000ff : 0xff0000}); // Blue for first 2
             let sphere = new THREE.Mesh(geometry, material);
             sphere.position.set(coord[0], coord[1], coord[2]);
             scene.add(sphere);
+            spheres.push(sphere);
+
+            // Create a label for each sphere
+            let label = document.createElement('div');
+            label.className = 'label';
+            label.textContent = labels[index];
+            container.appendChild(label);
+            sphere.userData.label = label;
         });
 
         // Add lighting
@@ -101,8 +126,30 @@
             requestAnimationFrame(animate);
             renderer.render(scene, camera);
             controls.update(); // Update controls
+
+            // Update label positions
+            spheres.forEach(sphere => {
+                let vector = sphere.position.clone();
+                vector.project(camera);
+
+                let x = (vector.x * 0.5 + 0.5) * container.clientWidth;
+                let y = (vector.y * -0.5 + 0.5) * container.clientHeight;
+
+                sphere.userData.label.style.left = `${x}px`;
+                sphere.userData.label.style.top = `${y}px`;
+            });
         }
         animate();
+
+        // Handle window resizing
+        window.addEventListener('resize', () => {
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+        });
     </script>
 </body>
+
 </html>
